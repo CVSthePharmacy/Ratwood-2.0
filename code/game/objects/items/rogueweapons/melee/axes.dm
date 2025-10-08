@@ -269,7 +269,7 @@
 	wlength = WLENGTH_NORMAL
 	toolspeed = 2
 	max_integrity = 300 //+50, given it has no damage increase like the Warden's. Still not great for mining.
-	demolition_mod = 1.75//100%, +50% over woodcutting. Still not on par with the sapper's 100%.
+	demolition_mod = 1.75//75%, +25% over woodcutting. Still not on par with the sapper's 100%.
 
 /obj/item/rogueweapon/stoneaxe/woodcut/wardenpick
 	name = "Wardens' axe"
