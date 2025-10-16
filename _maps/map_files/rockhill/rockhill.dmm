@@ -32557,6 +32557,10 @@
 	},
 /turf/open/floor/rogue/herringbone,
 /area/rogue/indoors/inq/office)
+"llw" = (
+/obj/structure/roguemachine/duoface,
+/turf/closed/wall/mineral/rogue/craftstone,
+/area/rogue/under/cavewet)
 "llD" = (
 /obj/machinery/light/rogue/wallfire/candle,
 /turf/open/floor/rogue/carpet,
@@ -65131,9 +65135,6 @@
 /obj/item/rope/chain,
 /obj/item/rope/chain,
 /obj/item/rogueweapon/whip,
-/obj/item/smokebomb,
-/obj/item/smokebomb,
-/obj/item/smokebomb,
 /obj/item/reagent_containers/glass/bottle/rogue/berrypoison,
 /turf/open/floor/rogue/churchrough,
 /area/rogue/indoors/town/bath)
@@ -100773,7 +100774,7 @@ whb
 xkm
 xkm
 whb
-xks
+llw
 xiI
 uUo
 uas

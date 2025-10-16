@@ -259,6 +259,10 @@
 	new /obj/item/ash(T)
 	qdel(src)
 
+/obj/item/grenade/smokebomb
+    parent_type = /obj/item/bomb/smoke
+
+
 /obj/item/tntstick
 	name = "blackpowder stick"
 	desc = "A bit of gunpowder in paper shell..."
@@ -479,4 +483,3 @@
 	smoke_type = /datum/effect_system/smoke_spread/mute_gas
 
 
-	
