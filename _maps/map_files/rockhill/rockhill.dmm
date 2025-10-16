@@ -39179,6 +39179,7 @@
 /area/rogue/outdoors/bograt/above)
 "nFK" = (
 /obj/structure/mineral_door/wood/towner/miner,
+/turf/open/floor/rogue/dirt/road,
 /area/rogue/indoors)
 "nFR" = (
 /turf/open/floor/rogue/blocks/stonered,
