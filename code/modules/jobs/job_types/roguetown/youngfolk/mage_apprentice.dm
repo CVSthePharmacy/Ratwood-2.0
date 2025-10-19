@@ -48,7 +48,7 @@
 		H.become_blind("advsetup")
 
 /datum/advclass/wapprentice/associate
-	name = "Magician's Associate"
+	name = "Magician Associate"
 	tutorial = "You were once an apprentice, though through your studies and practice you've mastered the basics of the arcyne. You now spend your days working under your master, honing your skills so that you might one day be considered a true master yourself."
 	outfit = /datum/outfit/job/roguetown/wapprentice/associate
 
