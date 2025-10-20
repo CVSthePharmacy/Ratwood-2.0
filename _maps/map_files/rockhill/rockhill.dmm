@@ -34980,6 +34980,10 @@
 	},
 /turf/open/floor/rogue/herringbone,
 /area/rogue/indoors/inq/office)
+"llw" = (
+/obj/structure/roguemachine/duoface,
+/turf/closed/wall/mineral/rogue/craftstone,
+/area/rogue/under/cavewet)
 "llD" = (
 /obj/machinery/light/rogue/wallfire/candle,
 /turf/open/floor/rogue/carpet,
@@ -42088,6 +42092,7 @@
 /area/rogue/outdoors/bograt/above)
 "nFK" = (
 /obj/structure/mineral_door/wood/towner/miner,
+/turf/open/floor/rogue/dirt/road,
 /area/rogue/indoors)
 "nFR" = (
 /turf/open/floor/rogue/blocks/stonered,
@@ -106080,7 +106085,7 @@ whb
 xkm
 xkm
 whb
-xks
+llw
 xiI
 uUo
 uas

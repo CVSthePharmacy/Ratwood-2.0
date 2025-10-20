@@ -259,11 +259,15 @@
 	new /obj/item/ash(T)
 	qdel(src)
 
+/obj/item/grenade/smokebomb
+    parent_type = /obj/item/bomb/smoke
+
+
 /obj/item/tntstick
-	name = "blastpowder stick"
-	desc = "A bit of blastpowder in paper shell..."
-	icon_state = "tnt_stick"
-	var/lit_state = "tnt_stick-lit"
+	name = "blackpowder stick"
+	desc = "A bit of gunpowder in paper shell..."
+	icon_state = "dinamite"
+	var/lit_state = "dinamitelit"
 	icon = 'icons/roguetown/items/misc.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 	throwforce = 0
@@ -321,8 +325,8 @@
 			else
 				explosion(T, devastation_range = 1, heavy_impact_range = 2, light_impact_range = 4, smoke = TRUE, soundin = pick('sound/misc/explode/bottlebomb (1).ogg','sound/misc/explode/bottlebomb (2).ogg'))
 				loud_message("A muted explosion echos in the ears of those whom hear it", hearing_distance = 14)
-				qdel(src) //go into walls /turf/closed/wall/ and see /turf/closed/wall/ex_act. Its bounded with /proc/explosion
-		else
+				qdel(src) //IMPORTANT!! go into walls /turf/closed/wall/ and see /turf/closed/wall/ex_act. Its bounded with /proc/explosion. Same for /obj/structure and /obj/structure/ex_act because if you going to fuck intergity or whatever this shit called players will skin you alive for breaking their equipment and keys
+		else //also /turf/open/floor/ex_act for comment above
 			if(prob(prob2fail))
 				snuff()
 
@@ -332,10 +336,11 @@
 		explode(TRUE)
 
 /obj/item/satchel_bomb
-	name = "blastpowder satchel"
-	desc = "A satchel full of blastpowder..."
-	icon_state = "satchel_bomb"
-	var/lit_state = "satchel_bomb-lit"
+	name = "bomb satchel"
+	desc = "A satchel full of gunpowder..."
+	icon_state = "dinamitesatchel"
+	var/lit_state = "dinamitesatchellit"
+	icon = 'icons/roguetown/items/misc.dmi'
 	icon = 'icons/roguetown/items/misc.dmi'
 	w_class = WEIGHT_CLASS_BULKY
 	throwforce = 0
@@ -409,7 +414,7 @@
 /obj/item/impact_grenade
 	name = "impact grenade"
 	desc = "Some substance, hidden under some paper and skin."
-	icon_state = "impact_grenade"
+	icon_state = "impactgrenade"
 	icon = 'icons/roguetown/items/misc.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 	throwforce = 0
@@ -476,3 +481,5 @@
 /obj/item/impact_grenade/smoke/mute_gas
 	additional_desc = "The smell from this makes your mind blank and your tongue still."
 	smoke_type = /datum/effect_system/smoke_spread/mute_gas
+
+
