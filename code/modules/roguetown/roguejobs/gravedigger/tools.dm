@@ -366,7 +366,7 @@
 	wdefense = 5
 	swingsound = BLADEWOOSH_MED
 	associated_skill = /datum/skill/combat/axes
-	demolition_mod = 7 // breaks things fast
+	demolition_mod = 3.5 // breaks things fast
 	resistance_flags = FLAMMABLE
 	blade_dulling = DULLING_SHAFT_WOOD
 	gripped_intents = list(/datum/intent/axe/cut/battle, /datum/intent/axe/chop/battle, /datum/intent/mace/smash)

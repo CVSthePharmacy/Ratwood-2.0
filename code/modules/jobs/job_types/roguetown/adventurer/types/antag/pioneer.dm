@@ -9,9 +9,9 @@
 	subclass_stats = list(
 		STATKEY_INT = 3,
 		STATKEY_LCK = 1,
-		STATKEY_STR = 2,
-		STATKEY_CON = 2,
-		STATKEY_PER = 2,
+		STATKEY_STR = 1,
+		STATKEY_CON = 1,
+		STATKEY_PER = 1,
 		STATKEY_END = 2 //a lot of stats but no any traits, literally
 	)
 
@@ -45,8 +45,8 @@
 		/obj/item/rogueweapon/tongs = 1
 	)
 
-	H.adjust_skillrank(/datum/skill/combat/bows, 5, TRUE)
-	H.adjust_skillrank(/datum/skill/combat/crossbows, 5, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/bows, 2, TRUE)
+	H.adjust_skillrank(/datum/skill/combat/crossbows, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/combat/polearms, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/combat/axes, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/combat/maces, 3, TRUE)
