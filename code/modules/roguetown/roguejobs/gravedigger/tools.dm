@@ -362,7 +362,7 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	sharpness = 100
 	smeltresult = /obj/item/ingot/steel
-	minstr = 12
+	minstr = 9
 	wdefense = 5
 	swingsound = BLADEWOOSH_MED
 	associated_skill = /datum/skill/combat/axes
