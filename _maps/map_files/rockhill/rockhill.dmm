@@ -34980,10 +34980,6 @@
 	},
 /turf/open/floor/rogue/herringbone,
 /area/rogue/indoors/inq/office)
-"llw" = (
-/obj/structure/roguemachine/duoface,
-/turf/closed/wall/mineral/rogue/craftstone,
-/area/rogue/under/cavewet)
 "llD" = (
 /obj/machinery/light/rogue/wallfire/candle,
 /turf/open/floor/rogue/carpet,
