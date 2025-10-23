@@ -31,7 +31,7 @@
 	armor = /obj/item/clothing/suit/roguetown/armor/leather/studded
 	backl = /obj/item/storage/backpack/rogue/backpack/
 	backr = /obj/item/rogueweapon/shovel/saperka //40 force +1.5 dmg SMASH but SLOW. If your enemy is a mental retard and stays on one place you delete them
-	beltl = /obj/item/rogueweapon/pick/steel
+	beltl = /obj/item/storage/magebag/detpack
 	beltr = /obj/item/flashlight/flare/torch/lantern
 	id = /obj/item/mattcoin
 	backpack_contents = list(
@@ -43,6 +43,7 @@
 		/obj/item/rogueore/iron=1,
 		/obj/item/rogueweapon/hammer/iron = 1,
 		/obj/item/rogueweapon/tongs = 1
+		/obj/item/rogueweapon/pick/steel
 	)
 
 	H.adjust_skillrank(/datum/skill/combat/bows, 2, TRUE)
