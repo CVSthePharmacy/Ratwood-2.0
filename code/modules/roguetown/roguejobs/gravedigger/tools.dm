@@ -354,7 +354,7 @@
 	desc = "A compact, steel-headed spade favored by pioneers. Scarred by a hundred fieldworks, its socket is nicked from prying and the edge has been honed to bite through roots-or armor-in a pinch."
 	icon_state = "shovel"
 	icon = 'icons/roguetown/weapons/tools.dmi'
-	max_blade_int = 300
+	max_blade_int = 260
 	wlength = WLENGTH_SHORT
 	gripped_intents = null
 	wlength = WLENGTH_SHORT

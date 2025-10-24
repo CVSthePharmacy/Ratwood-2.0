@@ -337,9 +337,9 @@
 
 /obj/item/satchel_bomb
 	name = "bomb satchel"
-	desc = "A satchel full of gunpowder..."
-	icon_state = "dinamitesatchel"
-	var/lit_state = "dinamitesatchellit"
+	desc = "A satchel full of blastpowder..."
+	icon_state = "satchel_bomb"
+	var/lit_state = "satchel_bomb-lit"
 	icon = 'icons/roguetown/items/misc.dmi'
 	icon = 'icons/roguetown/items/misc.dmi'
 	w_class = WEIGHT_CLASS_BULKY
