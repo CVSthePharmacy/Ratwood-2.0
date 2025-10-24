@@ -264,10 +264,10 @@
 
 
 /obj/item/tntstick
-	name = "blackpowder stick"
-	desc = "A bit of gunpowder in paper shell..."
-	icon_state = "dinamite"
-	var/lit_state = "dinamitelit"
+	name = "blastpowder stick"
+	desc = "A bit of blastpowder in paper shell..."
+	icon_state = "tnt_stick"
+	var/lit_state = "tnt_stick-lit"
 	icon = 'icons/roguetown/items/misc.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 	throwforce = 0
@@ -414,7 +414,7 @@
 /obj/item/impact_grenade
 	name = "impact grenade"
 	desc = "Some substance, hidden under some paper and skin."
-	icon_state = "impactgrenade"
+	icon_state = "impact_grenade"
 	icon = 'icons/roguetown/items/misc.dmi'
 	w_class = WEIGHT_CLASS_SMALL
 	throwforce = 0
