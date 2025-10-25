@@ -61,7 +61,7 @@
 	H.adjust_skillrank(/datum/skill/labor/lumberjacking, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/misc/athletics, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/misc/reading, 3, TRUE)
-	H.adjust_skillrank(/datum/skill/misc/lockpicking, 2, TRUE)
+	H.adjust_skillrank(/datum/skill/craft/traps, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/craft/engineering, 3, TRUE)
 	H.adjust_skillrank(/datum/skill/craft/blacksmithing, 2, TRUE)
 	H.adjust_skillrank(/datum/skill/craft/armorsmithing, 2, TRUE)
