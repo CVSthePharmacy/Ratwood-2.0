@@ -336,7 +336,7 @@
 		explode(TRUE)
 
 /obj/item/satchel_bomb
-	name = "bomb satchel"
+	name = "blastpowder satchel"
 	desc = "A satchel full of blastpowder..."
 	icon_state = "satchel_bomb"
 	var/lit_state = "satchel_bomb-lit"
