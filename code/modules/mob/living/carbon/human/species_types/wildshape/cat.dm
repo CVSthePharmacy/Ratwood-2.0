@@ -26,7 +26,10 @@
 
 		AddSpell(new /obj/effect/proc_holder/spell/self/catclaws)
 		AddSpell(new /obj/effect/proc_holder/spell/targeted/woundlick)
-		real_name = "cat" //Stealthy transform, lets give it a try
+		if (src.client.prefs?.wildshape_name)
+			real_name = "cat ([stored_mob.real_name])"
+		else
+			real_name = "cat"
 
 // CAT SPECIES DATUM //
 /datum/species/shapecat
@@ -115,7 +118,7 @@
 	item_state = null
 	lefthand_file = null
 	righthand_file = null
-	icon = 'icons/roguetown/weapons/32.dmi'
+	icon = 'icons/roguetown/weapons/unarmed32.dmi'
 	max_blade_int = 200
 	max_integrity = 200
 	force = 8 //Pitiful, literally less than a wooden stick or a thrown toy
@@ -198,7 +201,7 @@
             if(target.mind.has_antag_datum(/datum/antagonist/zombie))
                 to_chat(src, span_warning("I shall not lick it..."))
                 return
-            if(target.mind.has_antag_datum(/datum/antagonist/vampirelord))
+            if(target.mind.has_antag_datum(/datum/antagonist/vampire))
                 to_chat(src, span_warning("... What? Its an elder vampire!"))
                 return
         (!do_after(user, 7 SECONDS, target = target))

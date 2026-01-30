@@ -28,6 +28,7 @@ Credit dupes that require a lot of manual work shouldn't be removed, unless they
 /atom/movable
 	var/sellprice = 0 //sanitize this somewhere so it cant be decimals
 	var/static_price = FALSE
+	var/loadout_item = FALSE // TRUE if this item was spawned from the loadout system
 
 /atom/movable/proc/randomize_price()
 	if(sellprice)
@@ -47,6 +48,18 @@ Credit dupes that require a lot of manual work shouldn't be removed, unless they
 		if(sellprice == initial(sellprice))
 			randomize_price()
 		return sellprice
+
+// For appraisal purposes only - calculates total value including contents
+// Used by SEEPRICES trait for examining containers
+/atom/movable/proc/appraise_price()
+	var/total_sellprice = 0
+	if(length(src.contents))
+		for(var/obj/item/I in src.contents)
+			if(I)
+				total_sellprice += I.appraise_price()
+		return total_sellprice + get_real_price()
+	else
+		return get_real_price()
 
 /atom/movable/proc/pre_sell()
 	return

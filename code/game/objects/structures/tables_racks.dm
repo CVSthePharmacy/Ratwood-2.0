@@ -94,6 +94,10 @@
 /obj/structure/table/CanPass(atom/movable/mover, turf/target)
 	if(istype(mover) && (mover.pass_flags & PASSTABLE))
 		return 1
+	if(isliving(mover))
+		var/mob/living/M = mover
+		if(M.movement_type & FLYING)
+			return 1
 	if(mover.throwing)
 		return 1
 	if(locate(/obj/structure/table) in get_turf(mover))
@@ -136,7 +140,6 @@
 	pushed_mob.visible_message(span_danger("[user] slams [pushed_mob] onto \the [src]!"), \
 								span_danger("[user] slams you onto \the [src]!"))
 	log_combat(user, pushed_mob, "tabled", null, "onto [src]")
-	SEND_SIGNAL(pushed_mob, COMSIG_ADD_MOOD_EVENT, "table", /datum/mood_event/table)
 
 /obj/structure/table/proc/tableheadsmash(mob/living/user, mob/living/pushed_mob)
 	pushed_mob.Knockdown(30)
@@ -149,7 +152,6 @@
 	pushed_mob.visible_message(span_danger("[user] smashes [pushed_mob]'s head against \the [src]!"),
 								span_danger("[user] smashes your head against \the [src]"))
 	log_combat(user, pushed_mob, "head slammed", null, "against [src]")
-	SEND_SIGNAL(pushed_mob, COMSIG_ADD_MOOD_EVENT, "table", /datum/mood_event/table_headsmash)
 
 /obj/structure/table/attackby(obj/item/I, mob/user, params)
 	if(!(flags_1 & NODECONSTRUCT_1))
@@ -192,6 +194,35 @@
 	var/obj/item/I = user.get_active_held_item()
 	if(I)
 		if(!(I.item_flags & ABSTRACT))
+			if(istype(I, /obj/item/toy/cards/singlecard))
+				var/obj/item/toy/cards/singlecard/C = I
+				if(!C.flipped)
+					C.Flip()
+			else if(istype(I, /obj/item/toy/cards/cardhand))
+				var/obj/item/toy/cards/cardhand/H = I
+				user.visible_message("<span class='notice'>[user] lays [user.p_their()] hand of cards face-up on the table.</span>",
+					"<span class='notice'>I lay my cards face-up on the table.</span>")
+
+				var/turf/T = get_turf(src)
+				if(!T)
+					return
+
+				// Fan them out slightly so they don’t stack perfectly
+				var/offset = -((H.currenthand.len - 1) * 4) / 2
+
+				for(var/cardname in H.currenthand)
+					var/obj/item/toy/cards/singlecard/C = new(T)
+					C.parentdeck = H.parentdeck
+					C.cardname = cardname
+					C.apply_card_vars(C, H)
+					C.forceMove(T)
+					C.Flip()
+					C.pixel_x = offset
+					offset += 8
+
+				// delete the hand after laying them down
+				qdel(H)
+				return 1
 			if(user.transferItemToLoc(I, drop_location(), silent = FALSE))
 				var/list/click_params = params2list(params)
 				//Center the icon where the user clicked.
@@ -350,6 +381,16 @@
 /obj/structure/table/church/m/alt
 	icon_state = "churchtable_mid_alt"
 
+/obj/structure/table/finestone
+	name = "fine stone table"
+	desc = ""
+	icon = 'icons/roguetown/misc/tables.dmi'
+	icon_state = "stonetable_small"
+	max_integrity = 400
+	smooth = 0
+	climb_offset = 10
+	debris = list(/obj/item/natural/stoneblock = 1)
+
 /obj/structure/table/vtable
 	name = "ancient wooden table"
 	desc = ""
@@ -403,6 +444,7 @@
 	desc = ""
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "fancy_table"
+	smooth = 1
 	canSmoothWith = list(/obj/structure/table/wood/fancy,
 		/obj/structure/table/wood/fancy/black,
 		/obj/structure/table/wood/fancy/blue,
@@ -505,6 +547,10 @@
 /obj/structure/rack/CanPass(atom/movable/mover, turf/target)
 	if(src.density == 0) //Because broken racks -Agouri |TODO: SPRITE!|
 		return 1
+	if(isliving(mover))
+		var/mob/living/M = mover
+		if(M.movement_type & FLYING)
+			return 1
 	if(istype(mover) && (mover.pass_flags & PASSTABLE))
 		return 1
 	else

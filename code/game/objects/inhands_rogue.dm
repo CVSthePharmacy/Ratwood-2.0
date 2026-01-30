@@ -5,6 +5,7 @@
 //#ifdef TESTSERVER
 	var/force_reupdate_inhand = TRUE
 	var/smelted = FALSE // Sanity for smelteries to avoid runtimes, if this is a bar smelted through ore for exp gain
+	/// Determines whether this item is silver or not.
 	var/is_silver = FALSE
 	var/last_used = 0
 	var/toggle_state = null
@@ -123,8 +124,8 @@ GLOBAL_LIST_EMPTY(icon_state_cache)
 	if(!blended)
 		return
 
-//	if(color) //getflat does this i think?
-//		blended.Blend(color,ICON_MULTIPLY)
+	if(color)
+		blended.Blend(color,ICON_MULTIPLY)
 
 	if(!skipoverlays)
 		for(var/V in overlays)

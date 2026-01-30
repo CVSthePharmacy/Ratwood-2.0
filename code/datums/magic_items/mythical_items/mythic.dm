@@ -10,12 +10,14 @@
 	var/warned
 
 /datum/magic_item/mythic/infernalflame/on_hit(obj/item/source, atom/target, mob/user, proximity_flag, click_parameters)
+	if(!proximity_flag)
+		return
 	if(world.time < src.last_used + INFERNAL_FLAME_COOLDOWN)
 		return
 	if(isliving(target))
 		var/mob/living/targeted = target
 		targeted.adjust_fire_stacks(10)
-		targeted.IgniteMob()
+		targeted.ignite_mob()
 		targeted.visible_message(span_danger("[source] sets [targeted] on fire!"))
 		src.last_used = world.time
 
@@ -28,7 +30,7 @@
 		var/mob/living/damaging = target
 		if(damaging.stat != DEAD)
 			damaging.adjust_fire_stacks(10)
-			damaging.IgniteMob()
+			damaging.ignite_mob()
 			damaging.visible_message(span_danger("[fired_from] sets [damaging] on fire!"))
 			src.last_used = world.time
 
@@ -37,7 +39,7 @@
 		return
 	if(isliving(attacker) && attacker != owner)
 		attacker.adjust_fire_stacks(10)
-		attacker.IgniteMob()
+		attacker.ignite_mob()
 		attacker.visible_message(span_danger("[I] sets [attacker] on fire!"))
 		src.last_used = world.time
 
@@ -67,6 +69,8 @@
 			src.last_used = world.time
 
 /datum/magic_item/mythic/freezing/on_hit(obj/item/source, atom/target, mob/user, proximity_flag, click_parameters)
+	if(!proximity_flag)
+		return
 	if(world.time < src.last_used + FREEZING_COOLDOWN)
 		return
 	if(isliving(target))
@@ -138,7 +142,7 @@
 			if(1)
 				L.apply_damage(15, BURN)
 				L.adjust_fire_stacks(5)
-				L.IgniteMob()
+				L.ignite_mob()
 				to_chat(L, span_warning("Chaotic flames engulf you!"))
 			if(2)
 				L.apply_damage(10, BRUTE)
