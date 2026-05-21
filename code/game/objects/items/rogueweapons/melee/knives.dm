@@ -1,4 +1,4 @@
-//intent datums ฅ^•ﻌ•^ฅ
+//intent datums :3
 
 /datum/intent/dagger
 	clickcd = 8
@@ -126,7 +126,7 @@
 	//flipping knives has a cooldown on to_chat to reduce chatspam
 	COOLDOWN_DECLARE(flip_cooldown)
 
-/obj/item/rogueweapon/huntingknife/Initialize()
+/obj/item/rogueweapon/huntingknife/Initialize(mapload)
 	..()
 	var/static/list/slapcraft_recipe_list = list(
 		/datum/crafting_recipe/roguetown/survival/peasantry/maciejowski_knife,
@@ -426,7 +426,7 @@
 	icon_state = "warden_machete"
 	sheathe_icon = "warden_machete"
 
-/obj/item/rogueweapon/huntingknife/idagger/steel/corroded/Initialize()
+/obj/item/rogueweapon/huntingknife/idagger/steel/corroded/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/tipped_item)	//Lets you tip your weapon in poison
 
@@ -472,7 +472,7 @@
 	force = 22 // 10% - This is a 8 clickCD weapon
 	max_integrity = 200
 
-/obj/item/rogueweapon/huntingknife/idagger/steel/pestrasickle/Initialize()
+/obj/item/rogueweapon/huntingknife/idagger/steel/pestrasickle/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/tipped_item)	//Lets you tip your weapon in poison
 
@@ -486,7 +486,7 @@
 	smeltresult = /obj/item/ingot/steel
 	picklvl = 1.3
 
-/obj/item/rogueweapon/huntingknife/idagger/dtace/Initialize()
+/obj/item/rogueweapon/huntingknife/idagger/dtace/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/tipped_item)	//Lets you tip your weapon in poison
 
@@ -624,7 +624,7 @@
 	var/is_bled = FALSE
 	picklvl = 1.1
 
-/obj/item/weapon/knife/dagger/silver/arcyne/Initialize()
+/obj/item/weapon/knife/dagger/silver/arcyne/Initialize(mapload)
 	. = ..()
 	filter(type="drop_shadow", x=0, y=0, size=2, offset=1, color=rgb(128, 0, 128, 1))
 
@@ -930,7 +930,7 @@
 	force = 14
 	max_integrity = 150
 	name = "steel scissors"
-	desc = "Scissors made of solid steel that may be used to salvage usable materials from clothing, more durable and a tad more deadly than their iron conterpart."
+	desc = "Scissors made of solid steel that may be used to salvage usable materials from clothing, more durable and a tad more deadly than their iron counterpart."
 	icon_state = "sscissors"
 	smeltresult = /obj/item/ingot/steel
 
@@ -952,7 +952,7 @@
 		var/mob/living/carbon/human/H = M
 		// Check if targeting the head or skull zone
 		if(user.zone_selected == BODY_ZONE_HEAD || user.zone_selected == BODY_ZONE_PRECISE_SKULL)
-			var/list/options = list("hairstyle", "facial hairstyle")
+			var/list/options = list("hairstyle", "facial hairstyle", "maintain haircut")
 			var/chosen = input(user, "What would you like to style?", "Hair Styling") as null|anything in options
 			if(!chosen)
 				return
@@ -1001,6 +1001,7 @@
 								H.update_hair()
 								playsound(src, 'sound/items/flint.ogg', 50, TRUE)
 								user.visible_message(span_notice("[user] finishes styling [H]'s hair."), span_notice("You finish styling [H == user ? "your" : "[H]'s"] hair."))
+								H.add_stress(/datum/stressevent/fresh_haircut)
 
 				if("facial hairstyle")
 					var/datum/customizer_choice/bodypart_feature/hair/facial/humanoid/facial_choice = CUSTOMIZER_CHOICE(/datum/customizer_choice/bodypart_feature/hair/facial/humanoid)
@@ -1037,12 +1038,22 @@
 								H.update_hair()
 								playsound(src, 'sound/items/flint.ogg', 50, TRUE)
 								user.visible_message(span_notice("[user] finishes styling [H]'s facial hair."), span_notice("You finish styling [H == user ? "your" : "[H]'s"] facial hair."))
+								H.add_stress(/datum/stressevent/fresh_haircut)
+
+				if("maintain haircut")
+					user.visible_message(span_notice("[user] begins tidying up [H]'s hair..."), span_notice("You begin tidying up [H == user ? "your" : "[H]'s"] hair..."))
+					if(!do_after(user, 15 SECONDS, target = H))
+						to_chat(user, span_warning("The tidying was interrupted!"))
+						return
+					playsound(src, 'sound/items/flint.ogg', 50, TRUE)
+					user.visible_message(span_notice("[user] finishes tidying up [H]'s hair."), span_notice("You finish tidying up [H == user ? "your" : "[H]'s"] hair."))
+					H.add_stress(/datum/stressevent/fresh_haircut)
 			return TRUE
 	// If not using snip intent on head/skull or not a human, proceed with normal attack
 	if(user.used_intent.type == /datum/intent/snip)
 		if(ishuman(M))
 			var/mob/living/carbon/human/H = M
-			var/list/options = list("hairstyle", "facial hairstyle")
+			var/list/options = list("hairstyle", "facial hairstyle", "maintain haircut")
 			var/chosen = input(user, "What would you like to style?", "Hair Styling") as null|anything in options
 			if(!chosen)
 				return
@@ -1091,6 +1102,7 @@
 								H.update_hair()
 								playsound(src, 'sound/items/flint.ogg', 50, TRUE)
 								user.visible_message(span_notice("[user] finishes styling [H]'s hair."), span_notice("You finish styling [H == user ? "your" : "[H]'s"] hair."))
+								H.add_stress(/datum/stressevent/fresh_haircut)
 
 				if("facial hairstyle")
 					var/datum/customizer_choice/bodypart_feature/hair/facial/humanoid/facial_choice = CUSTOMIZER_CHOICE(/datum/customizer_choice/bodypart_feature/hair/facial/humanoid)
@@ -1127,6 +1139,16 @@
 								H.update_hair()
 								playsound(src, 'sound/items/flint.ogg', 50, TRUE)
 								user.visible_message(span_notice("[user] finishes styling [H]'s facial hair."), span_notice("You finish styling [H == user ? "your" : "[H]'s"] facial hair."))
+								H.add_stress(/datum/stressevent/fresh_haircut)
+
+				if("maintain haircut")
+					user.visible_message(span_notice("[user] begins tidying up [H]'s hair..."), span_notice("You begin tidying up [H == user ? "your" : "[H]'s"] hair..."))
+					if(!do_after(user, 15 SECONDS, target = H))
+						to_chat(user, span_warning("The tidying was interrupted!"))
+						return
+					playsound(src, 'sound/items/flint.ogg', 50, TRUE)
+					user.visible_message(span_notice("[user] finishes tidying up [H]'s hair."), span_notice("You finish tidying up [H == user ? "your" : "[H]'s"] hair."))
+					H.add_stress(/datum/stressevent/fresh_haircut)
 			return
 	return ..()
 

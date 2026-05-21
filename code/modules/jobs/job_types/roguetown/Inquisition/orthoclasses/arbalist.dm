@@ -84,7 +84,6 @@
 	strip_delay = 20
 	var/max_storage = 5
 	var/list/stakes = list()
-	sewrepair = TRUE
 	component_type = /datum/component/storage/concrete/roguetown/belt/knife_belt
 
 /obj/item/storage/belt/rogue/leather/stakebelt/attackby(obj/A, loc, params)
@@ -117,7 +116,7 @@
 	if(stakes.len)
 		. += span_notice("[stakes.len] inside.")
 
-/obj/item/storage/belt/rogue/leather/stakebelt/Initialize()
+/obj/item/storage/belt/rogue/leather/stakebelt/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
 		var/obj/item/ammo_casing/caseless/rogue/heavy_bolt/holy/K = new()

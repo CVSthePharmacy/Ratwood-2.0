@@ -37,7 +37,9 @@ GLOBAL_LIST_INIT(special_traits, build_special_traits())
 	apply_charflaw_equipment(character, player)
 	apply_prefs_special(character, player)
 	apply_prefs_virtue(character, player)
+	apply_prefs_origin(character, player)
 	apply_prefs_race_bonus(character, player)
+	apply_voicepacks(character, player)
 	if(player.prefs.dnr_pref)
 		apply_dnr_trait(character, player)
 	if(player.prefs.loadout)
@@ -73,6 +75,12 @@ GLOBAL_LIST_INIT(special_traits, build_special_traits())
 	var/datum/job/assigned_job = SSjob.GetJob(character.mind?.assigned_role)
 	if(assigned_job)
 		assigned_job.clamp_stats(character)
+
+/proc/apply_voicepacks(mob/living/carbon/human/character, client/player)
+	if(player.prefs.voice_pack != "Default")
+		var/datum/voicepack/VP = GLOB.voice_packs_list[player.prefs.voice_pack]
+		character.dna.species.soundpack_m = new VP()
+		character.dna.species.soundpack_f = new VP()
 
 /proc/apply_prefs_virtue(mob/living/carbon/human/character, client/player)
 	if (!player)
@@ -122,7 +130,7 @@ GLOBAL_LIST_INIT(special_traits, build_special_traits())
 	if(bonus in GLOB.roguetraits)
 		ADD_TRAIT(character, bonus, TRAIT_GENERIC)
 
-/proc/virtue_check(var/datum/virtue/V, heretic = FALSE)
+/proc/virtue_check(datum/virtue/V, heretic = FALSE)
 	if(V)
 		if(istype(V,/datum/virtue/heretic) && !heretic)
 			return FALSE
@@ -239,3 +247,13 @@ GLOBAL_LIST_INIT(special_traits, build_special_traits())
 	special.on_apply(character, silent)
 	if(!silent && special.greet_text)
 		to_chat(character, special.greet_text)
+
+/proc/apply_prefs_origin(mob/living/carbon/human/character, client/player)
+	if(!player.prefs)
+		return
+	var/datum/origin/O = player.prefs.origin
+	if(!O)
+		O = new /datum/origin/ferentia
+	character.origin = O.origin_title
+	if(O.origin_language)
+		character.grant_language(O.origin_language)

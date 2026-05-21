@@ -12,6 +12,14 @@
 	var/wallclimb = FALSE
 	var/climbdiff = 0
 
+/turf/closed/basic
+	baseturfs = /turf/closed/basic
+
+/turf/closed/basic/New()//Do not convert to Initialize
+	SHOULD_CALL_PARENT(FALSE)
+	//This is used to optimize the map loader
+	return
+
 /turf/closed/MouseDrop_T(atom/movable/O, mob/user)
 	. = ..()
 	if(!wallpress)
@@ -25,6 +33,11 @@
 		if(L.mobility_flags & MOBILITY_MOVE)
 			wallpress(L)
 			return
+	else if(user != O && ishuman(user) && ishuman(O)) // check to see if user is dragging another mob onto the wall
+		var/mob/living/carbon/human/us = user
+		var/mob/living/carbon/human/them = O
+		if((us.mobility_flags & MOBILITY_MOVE) && (them.mobility_flags & MOBILITY_MOVE) && us.get_highest_grab_state_on(them) > GRAB_PASSIVE)
+			wallpress(them, us)
 
 /turf/closed/proc/feel_turf(mob/living/user)
 	to_chat(user, span_notice("I start feeling around [src]"))
@@ -34,7 +47,7 @@
 	for(var/obj/structure/lever/hidden/lever in contents)
 		lever.feel_button(user)
 
-/turf/closed/proc/wallpress(mob/living/user)
+/turf/closed/proc/wallpress(mob/living/user, mob/living/pressing_mob = null)
 	if(user.wallpressed)
 		return
 	if(user.is_shifted)
@@ -42,11 +55,15 @@
 	if(!(user.mobility_flags & MOBILITY_STAND))
 		return
 	var/dir2wall = get_dir(user,src)
+	if(pressing_mob) // step up to the wall
+		user.Move(get_step(pressing_mob, user))
+		user.setDir(turn(get_dir(pressing_mob, src),180))
+		dir2wall = get_dir(user,src)
 	if(!(dir2wall in GLOB.cardinals))
 		return
 	user.wallpressed = dir2wall
 	user.update_wallpress_slowdown()
-	user.visible_message(span_info("[user] leans against [src]."))
+	user.visible_message(pressing_mob ? span_info("[user] is pushed against [src] by [pressing_mob].") : span_info("[user] leans against [src]."))
 	switch(dir2wall)
 		if(NORTH)
 			user.setDir(SOUTH)
@@ -104,7 +121,7 @@
 				H.visible_message(span_warning("[H] runs into [src]!"), span_warning("I run into [src]!"))
 				addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/carbon/human, Knockdown), 10), 10)
 
-/turf/closed/Initialize()
+/turf/closed/Initialize(mapload)
 	. = ..()
 	if(above_floor)
 		var/turf/open/transparent/openspace/target = get_step_multiz(src, UP)
@@ -326,7 +343,7 @@
 
 /turf/closed/indestructible/splashscreen
 	name = ""
-	icon = 'icons/default_title.dmi'
+	icon = 'icons/title_static.png'
 	icon_state = ""
 	layer = FLY_LAYER
 	bullet_bounce_sound = null
@@ -335,6 +352,9 @@
 	SStitle.splash_turf = src
 	if(SStitle.icon)
 		icon = SStitle.icon
+	filters += filter(type="wave", x=0, y=2, size=0.3, offset=0)
+	animate(filters[filters.len], loop=-1, time=10, offset=2)
+	animate(time=0, offset=0)
 	..()
 
 /turf/closed/indestructible/splashscreen/vv_edit_var(var_name, var_value)
@@ -355,13 +375,13 @@
 /turf/closed/indestructible/opshuttle
 	icon_state = "wall3"
 
-/turf/closed/indestructible/fakeglass/Initialize()
+/turf/closed/indestructible/fakeglass/Initialize(mapload)
 	. = ..()
 	icon_state = null //set the icon state to null, so our base state isn't visible
 	underlays += mutable_appearance('icons/obj/structures.dmi', "grille") //add a grille underlay
 	underlays += mutable_appearance('icons/turf/floors.dmi', "plating") //add the plating underlay, below the grille
 
-/turf/closed/indestructible/opsglass/Initialize()
+/turf/closed/indestructible/opsglass/Initialize(mapload)
 	. = ..()
 	icon_state = null
 	underlays += mutable_appearance('icons/obj/structures.dmi', "grille")

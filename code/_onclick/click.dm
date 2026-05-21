@@ -154,13 +154,6 @@
 				return
 
 
-//	if(modifiers["shift"] && modifiers["middle"])
-//		changeNext_move(CLICK_CD_MELEE)
-//		ShiftMiddleClickOn(A)
-//		return
-//	if(modifiers["shift"] && modifiers["ctrl"])
-//		CtrlShiftClickOn(A)
-//		return
 	if(modifiers["shift"] && modifiers["right"])
 		ShiftRightClickOn(A, params)
 		return
@@ -305,7 +298,7 @@
 						target = M
 						break
 					if(target)
-						if(target.Adjacent(src) || (CanReach(target, W)))
+						if(target.Adjacent(src) || (CanReach(target, W) && used_intent.effective_range_type))
 							do_attack_animation(T, used_intent.animname, used_intent.masteritem, used_intent = src.used_intent)
 							resolveAdjacentClick(target,W,params,used_hand)
 							atkswinging = null
@@ -570,9 +563,9 @@ GLOBAL_LIST_EMPTY(reach_dummy_pool)
 	return
 
 /**
-  *Middle click
-  *Mainly used for swapping hands
-  */
+ *Middle click
+ *Mainly used for swapping hands
+ */
 /mob/proc/MiddleClickOn(atom/A, params)
 	. = SEND_SIGNAL(src, COMSIG_MOB_MIDDLECLICKON, A)
 	if(. & COMSIG_MOB_CANCEL_CLICKON)
@@ -713,7 +706,12 @@ GLOBAL_LIST_EMPTY(reach_dummy_pool)
 		user.client.statpanel = T.name
 
 /mob/proc/CtrlRightClickOn(atom/A, params)
+	if(A.CtrlRightClick(src))
+		return
 	pointed(A)
+
+/atom/proc/CtrlRightClick(mob/user)
+	return FALSE
 
 /*
 	Misc helpers
@@ -755,11 +753,6 @@ GLOBAL_LIST_EMPTY(reach_dummy_pool)
 			setDir(EAST)
 		else
 			setDir(WEST)
-
-/mob/face_atom(atom/A)
-	if(!canface())
-		return FALSE
-	..()
 
 /mob/living/face_atom(atom/A)
 	var/olddir = dir
@@ -891,8 +884,8 @@ GLOBAL_LIST_EMPTY(reach_dummy_pool)
 		targeti.pixel_y = I.Height() - world.icon_size - 4
 		targeti.pixel_x = -1
 		src.client.images |= targeti
-		for(var/atom/movable/screen/eye_intent/eyet in hud_used.static_inventory)
-			eyet.update_icon(src) //Update eye icon
+		// for(var/atom/movable/screen/eye_intent/eyet in hud_used.static_inventory)
+		// 	eyet.update_icon(src) //Update eye icon
 	else
 		UntargetMob()
 
@@ -910,8 +903,8 @@ GLOBAL_LIST_EMPTY(reach_dummy_pool)
 		nodirchange = FALSE
 	src.client.images -= targeti
 	//clear hud icon
-	for(var/atom/movable/screen/eye_intent/eyet in hud_used.static_inventory)
-		eyet.update_icon(src)
+	// for(var/atom/movable/screen/eye_intent/eyet in hud_used.static_inventory)
+	// 	eyet.update_icon(src)
 
 /mob/proc/ShiftRightClickOn(atom/A, params)
 //	pointed(A, params)
@@ -924,7 +917,9 @@ GLOBAL_LIST_EMPTY(reach_dummy_pool)
 	if(stat)
 		return
 	if(get_dist(src, A) <= 2)
-		if(T == loc)
+		if(A.loc == src)
+			A.ShiftRightClick(src)
+		else if(T == loc)
 			look_up()
 		else
 			if(istransparentturf(T))
@@ -951,15 +946,15 @@ GLOBAL_LIST_EMPTY(reach_dummy_pool)
 	if(!fixedeye)
 		nodirchange = TRUE
 	tempfixeye = TRUE
-	for(var/atom/movable/screen/eye_intent/eyet in hud_used.static_inventory)
-		eyet.update_icon(src) //Update eye icon
+	// for(var/atom/movable/screen/eye_intent/eyet in hud_used.static_inventory)
+	// 	eyet.update_icon(src) //Update eye icon
 
 /// A special proc to fire rmb_intents *before* checking click cooldown, since some intents (guard) should be used regardless of CD.
 /mob/proc/try_special_attack(atom/A, list/modifiers)
 	return FALSE
 
 /mob/living/try_special_attack(atom/A, list/modifiers)
-	if(!rmb_intent || !cmode || istype(A, /obj/item/clothing) || istype(A, /obj/item/quiver) || istype(A, /obj/item/storage))
+	if(!rmb_intent || !cmode || isobj(A))
 		return FALSE
 
 	if(next_move > world.time && !rmb_intent?.bypasses_click_cd)

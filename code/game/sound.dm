@@ -106,7 +106,7 @@
 	pixel_y = -218
 
 /*
-/obj/effect/temp_visual/soundping/Initialize()
+/obj/effect/temp_visual/soundping/Initialize(mapload)
 	. = ..()
 	animate(src, alpha = 0, time = duration, easing = EASE_IN)
 */
@@ -226,7 +226,7 @@
 			client.played_loops[D]["SOUND"] = S
 			client.played_loops[D]["VOL"] = S.volume
 			client.played_loops[D]["MUTESTATUS"] = null
-			S.repeat = 1
+			S.repeat = D.repeat_sound ? 1 : 0
 
 	SEND_SOUND(src, S)
 

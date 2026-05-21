@@ -61,7 +61,8 @@ SUBSYSTEM_DEF(mapping)
 /datum/controller/subsystem/mapping/PreInit()
 	HACK_LoadMapConfig()
 	// After assigning a config datum to var/config, we check which map ajudstment fits the current config
-
+	if(islist(config.map_file) && length(config.map_file))
+		config.map_file = config.map_file[1]
 	for(var/datum/map_adjustment/each_adjust as anything in subtypesof(/datum/map_adjustment))
 		if(config.map_file && initial(each_adjust.map_file_name) != config.map_file)
 			continue
@@ -205,6 +206,7 @@ SUBSYSTEM_DEF(mapping)
 
 	for(var/map_json in config.other_z)
 		otherZ += load_map_config(map_json)
+		log_world("Loaded '[config.other_z]' ")
 
 	if(otherZ.len)
 		for(var/datum/map_config/OtherZ in otherZ)

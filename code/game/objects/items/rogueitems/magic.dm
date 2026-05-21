@@ -360,8 +360,8 @@ Necra's Censer
 ============*/
 /*
 - Cleans in an area around the person after
-  a do_after call, infinite uses. Should aid
-  the morticians with cleaning the town.
+	a do_after call, infinite uses. Should aid
+	the morticians with cleaning the town.
 */
 
 /obj/item/necra_censer
@@ -384,7 +384,7 @@ Necra's Censer
 
 /obj/item/necra_censer/attack_self(mob/user)
 	if(do_after(user, 3 SECONDS))
-		playsound(user.loc,  'sound/items/censer_use.ogg', 100)
+		playsound(user.loc, 'sound/items/censer_use.ogg', 100)
 		user.visible_message(span_info("[user.name] lifts up their arm and swings the chain on \the [name] around lightly."))
 		var/datum/effect_system/smoke_spread/smoke/necra_censer/S = new
 		S.set_up(2, user.loc)
