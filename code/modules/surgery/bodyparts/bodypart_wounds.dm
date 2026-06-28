@@ -66,6 +66,12 @@
 /obj/item/bodypart/proc/add_wound(datum/wound/wound, silent = FALSE, crit_message = FALSE)
 	if(!wound || !owner || (owner.status_flags & GODMODE))
 		return
+	if(isooze(owner) && wound.severity >= WOUND_SEVERITY_SEVERE) // Handles wounds for murkborne.
+		if(ispath(wound, /datum/wound))
+			wound = new wound()
+		if(is_ooze_wound(wound))
+			handle_ooze_wounds(wound, silent, crit_message)
+			return
 	if(ispath(wound, /datum/wound))
 		var/datum/wound/primordial_wound = GLOB.primordial_wounds[wound]
 		if(!primordial_wound.can_apply_to_bodypart(src))
@@ -125,10 +131,9 @@
 		bleed_rate *= grab.bleed_suppressing
 	bleed_rate = max(round(bleed_rate, 0.1), 0)
 
-	// temporarily disabling below because it is niche use and a LOT of performance drain
-	/*var/surgery_flags = get_surgery_flags()
+	var/surgery_flags = get_surgery_flags()
 	if(surgery_flags & SURGERY_CLAMPED)
-		return min(bleed_rate, 0.5)*/
+		return min(bleed_rate, 0.5)
 	return bleed_rate
 
 /// Called after a bodypart is attacked so that wounds and critical effects can be applied
@@ -167,30 +172,48 @@
 		var/crit_attempt = try_crit(sundering ? BCLASS_SUNDER : bclass, dam, user, zone_precise, silent, crit_message)
 		if(crit_attempt)
 			return crit_attempt
+
+	if(owner?.has_status_effect(/datum/status_effect/debuff/exposed))
+		playsound(owner, 'sound/combat/exposed_pop.ogg', 100, TRUE)
+		owner.remove_status_effect(/datum/status_effect/debuff/exposed)
+		visible_message(span_danger("[src] suffers a savage hit while exposed!"))
+		if(!do_crit)	//We aren't already screaming from a crit.
+			owner.emote("painmoan", forced = TRUE)
+	else if(owner?.has_status_effect(/datum/status_effect/debuff/vulnerable))
+		playsound(owner, 'sound/combat/vulnerable_pop.ogg', 100, TRUE)
+		owner.remove_status_effect(/datum/status_effect/debuff/vulnerable)
+		visible_message(span_danger("[src] is struck while vulnerable!"))
+		if(!do_crit)	//We aren't already screaming from a crit.
+			owner.emote("pain", forced = TRUE)
+
 	return dynwound
 
 /obj/item/bodypart/proc/manage_dynamic_wound(bclass, dam, armor)
 	var/woundtype
-	switch(bclass)
-		if(BCLASS_BLUNT, BCLASS_SMASH, BCLASS_PUNCH, BCLASS_TWIST)
-			woundtype = /datum/wound/dynamic/bruise
-		if(BCLASS_BITE)
-			woundtype = /datum/wound/dynamic/bite
-		if(BCLASS_CHOP, BCLASS_CUT)
-			woundtype = /datum/wound/dynamic/slash
-		if(BCLASS_STAB)
-			woundtype = /datum/wound/dynamic/puncture
-		if(BCLASS_PICK, BCLASS_PIERCE)
-			woundtype = /datum/wound/dynamic/gouge
-		if(BCLASS_LASHING)
-			woundtype = /datum/wound/dynamic/lashing
-		if(BCLASS_PUNISH)
-			woundtype = /datum/wound/dynamic/punish
-		else	//Wrong bclass type for wounds, skip adding this.
-			return
+	if(isooze(owner)) //If the owner is an ooze, gives them a special dynamic wound instead.
+		woundtype = /datum/wound/dynamic/ooze
+	else
+		switch(bclass)
+			if(BCLASS_BLUNT, BCLASS_SMASH, BCLASS_PUNCH, BCLASS_TWIST)
+				woundtype = /datum/wound/dynamic/bruise
+			if(BCLASS_BITE)
+				woundtype = /datum/wound/dynamic/bite
+			if(BCLASS_CHOP, BCLASS_CUT)
+				woundtype = /datum/wound/dynamic/slash
+			if(BCLASS_STAB)
+				woundtype = /datum/wound/dynamic/puncture
+			if(BCLASS_PICK, BCLASS_PIERCE)
+				woundtype = /datum/wound/dynamic/gouge
+			if(BCLASS_LASHING)
+				woundtype = /datum/wound/dynamic/lashing
+			if(BCLASS_PUNISH)
+				woundtype = /datum/wound/dynamic/punish
+			else	//Wrong bclass type for wounds, skip adding this.
+				return
 	var/datum/wound/dynwound = has_wound(woundtype)
+	var/exposed = owner.has_status_effect(/datum/status_effect/debuff/exposed)
 	if(!isnull(dynwound))
-		dynwound.upgrade(dam, armor)
+		dynwound.upgrade(dam, armor, exposed)
 	else
 		if(ispath(woundtype) && woundtype)
 			if(!isnull(woundtype))
@@ -198,7 +221,7 @@
 				dynwound = newwound
 				if(newwound && !isnull(newwound))	//don't even ask - Free
 					owner.visible_message(span_red("A new [newwound.name] appears on [owner]'s [LOWER_TEXT(bodyzone2readablezone(bodypart_to_zone(newwound.bodypart_owner)))]!"))
-					newwound.upgrade(dam, armor)
+					newwound.upgrade(dam, armor, exposed)
 	return dynwound
 
 /// Behemoth of a proc used to apply a wound after a bodypart is damaged in an attack
@@ -697,3 +720,18 @@
 		var/datum/status_effect/debuff/crit_resistance_cd/crit_resist_tracker_actual = crit_resist_tracker
 		// Iterate stack by 1 and then see if we can crit this hit
 		return !crit_resist_tracker_actual.try_crit()
+
+/obj/item/bodypart/proc/handle_ooze_wounds(datum/wound/wound, silent = FALSE, crit_message = FALSE)
+	if(!wound.handle_ooze_wound(src))
+		return
+	if(!istype(src, /obj/item/bodypart/head/))
+		if(crit_message)
+			var/message = "<span class='crit'><b>Critical hit!</b> The [src] melts apart into goop!</span>"
+			if(message)
+				owner.next_attack_msg += " [message]"
+		src.dismember()
+	else
+		if(has_wound(/datum/wound/slime/knockout))
+			add_wound(/datum/wound/slime/paralyze, silent, crit_message)
+		else
+			add_wound(/datum/wound/slime/knockout, silent, crit_message)

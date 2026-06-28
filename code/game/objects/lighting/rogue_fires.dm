@@ -85,6 +85,7 @@
 	bulb_colour = "#ff9648"
 	cookonme = FALSE
 	crossfire = FALSE
+	density = FALSE
 
 
 /obj/machinery/light/rogue/firebowl/standing/blue
@@ -183,6 +184,11 @@
 	density = FALSE
 	pixel_y = 32
 	cookonme = TRUE
+	
+/obj/machinery/light/rogue/campfire/fireplace/blue
+	desc = "A curious cool fire dances upon a bed of mysteriously glowing embers."
+	icon = 'icons/roguetown/misc/wallfireblue.dmi'
+	bulb_colour = "#6e90ff"
 
 /obj/machinery/light/rogue/candle
 	name = "candles"
@@ -365,6 +371,10 @@
 	QDEL_NULL(torchy)
 	on = FALSE
 	set_light(0)
+	pixel_x = 0
+	pixel_y = 0
+	if(dirin == SOUTH)
+		pixel_y = 32
 	update_icon()
 
 	..(dirin, user)
@@ -526,10 +536,9 @@
 /obj/machinery/light/rogue/hearth/attack_right(mob/user)
 	var/datum/skill/craft/cooking/cs = user?.get_skill_level(/datum/skill/craft/cooking)
 	var/cooktime_divisor = get_cooktime_divisor(cs)
-	if(do_after(user, 2 SECONDS / cooktime_divisor, target = src))
+	while(do_after(user, 2 SECONDS / cooktime_divisor, target = src))
 		to_chat(user, span_info("I fan the flame on [src].")) // Until line combine is on by default gotta do this to avoid spam
 		try_cook(cooktime_divisor)
-		attack_right(user)
 
 /obj/machinery/light/rogue/hearth/attackby(obj/item/W, mob/living/user, params)
 	lastuser = user // For processing food
@@ -969,3 +978,37 @@
 #undef MIN_STEW_TEMPERATURE
 #undef VOLUME_PER_STEW_COOK
 #undef VOLUME_PER_STEW_COOK_AFTER
+
+//Prestidigitation wisps are fun to decorate with!
+
+/obj/effect/wisp
+	name = "will-o'-the-wisp"
+	desc = "A small, fiery ball of light made up of mystical energy."
+	light_outer_range =  4
+	light_color = "#3FBAFD"
+	icon = 'icons/roguetown/items/lighting.dmi'
+	icon_state = "wisp"
+
+/obj/effect/wisp/infernal
+	name = "Infernal Wisp"
+	desc = "An ominous manifestation of latent ambient magick"
+	light_color = "#ff0008"
+	color = "#ff0008"
+
+/obj/effect/wisp/geothermal
+	name = "Odd Wisp"
+	desc = "A peculiar natural phenomena, seemingly related to the roiling lava below"
+	light_color = "#ff5630"
+	color = "#ff5630"
+
+/obj/effect/wisp/green
+	light_color = "#ffff00"
+	color = "#33ff00"
+
+/obj/effect/wisp/bluegreen
+	light_color = "#33ff00"
+	color = "#59ff93"
+
+/obj/effect/wisp/purple
+	light_color = "#ae00ff"
+	color = "#ff767d"
